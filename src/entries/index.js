@@ -1,28 +1,36 @@
 // 入口文件
 import React from 'react';
-import ReactDOM from 'react-dom';
+import {
+    render,
+    unmountComponentAtNode
+} from 'react-dom';
 
 import {
     AppContainer
 } from 'react-hot-loader';
 // AppContainer is a necessary wrapper component for HMR
 
-import App from '../pages/test';
+import App from '../router';
 
-const render = (Component) => {
-    ReactDOM.render(
+const mountNode = document.getElementById('root');
+
+const reRender = (Component) => {
+    render(
         <AppContainer>
           <Component/>
         </AppContainer>,
-        document.getElementById('root')
+        mountNode
     );
 };
 
-render(App);
+reRender(App);
 
 // Hot Module Replacement API
 if (module.hot) {
-    module.hot.accept('../pages/test', () => {
-        render(App)
+    module.hot.accept('../router', () => {
+        // Preventing the hot reloading error from react-router
+        unmountComponentAtNode(mountNode);
+
+        reRender(App)
     });
 }

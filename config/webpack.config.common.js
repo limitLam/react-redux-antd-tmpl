@@ -36,16 +36,38 @@ module.exports = {
   module: {
     rules: [{
       test: /\.js$/,
-      use: [
-        'babel-loader',
-      ],
+      use: [{
+        loader: 'babel-loader',
+        options: {
+          "plugins": [
+            // Use modularized antd
+            // import js and css modularly (less source files)
+            ["import", {
+              "libraryName": "antd",
+              "style": true
+            }],
+          ]
+        },
+      }, ],
       exclude: /node_modules/
     }, {
-      test: /\.css$/,
+      // test: /\.less$/,
+      test: /\.(css|less)$/,
       use: [
-        'style-loader',
-        'css-loader?modules',
+        'style-loader', {
+          loader: 'css-loader',
+          options: {
+            importLoaders: 1,
+            localIdentName: '[path]___[name]__[local]___[hash:base64:5]'
+          }
+        },
         'postcss-loader',
+        'less-loader',
+      ],
+      include: [
+        // resolve(__dirname, '../node_modules/antd'),
+        /node_modules\/.*antd\/.*/,
+        /node_modules\\.*antd\\.*/,
       ],
     }, ],
   },

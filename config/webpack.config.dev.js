@@ -48,10 +48,21 @@ module.exports = webpackMerge(common, {
 		publicPath: '/',
 		// match the output `publicPath`
 
+		host: 'localhost',
+
 		port: port,
 
 		stats: 'errors-only',
 		// stats: "verbose",
+		proxy: {
+			'/api/*': {
+				target: 'http://rap.taobao.org/',
+				pathRewrite: {
+					'^/api': '/mockjs/13701/'
+				},
+				secure: false
+			}
+		},
 	},
 
 	plugins: [

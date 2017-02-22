@@ -26,7 +26,6 @@ import {
 
 import routes from '../routes';
 
-
 const mountNode = document.getElementById('root');
 
 const reRender = (Component) => {

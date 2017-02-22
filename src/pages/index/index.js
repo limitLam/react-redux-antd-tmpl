@@ -20,7 +20,7 @@ const Option = Select.Option;
 export class Home extends Component {
     render() {
         return (
-            <div style={ { height:3000 } }>
+            <div>
                 <button onClick={this.props.onDecreaseClick}>-</button>
                 <span>{this.props.count}</span>
                 <button onClick={this.props.onIncreaseClick}>+</button>

@@ -40,6 +40,18 @@ module.exports = {
         loader: 'babel-loader',
         options: {
           "plugins": [
+            [
+              "react-css-modules", {
+                "context": resolve(__dirname, '../src'),
+                "filetypes": {
+                  ".less": "postcss-less",
+                },
+                "generateScopedName": "[path]___[name]__[local]___[hash:base64:5]",
+                // "filetypes": {
+                // ".less": "less",
+                // }
+              },
+            ],
             // Use modularized antd
             // import js and css modularly (less source files)
             ["import", {
@@ -68,6 +80,25 @@ module.exports = {
         // resolve(__dirname, '../node_modules/antd'),
         /node_modules\/.*antd\/.*/,
         /node_modules\\.*antd\\.*/,
+      ],
+    }, {
+      // test: /\.less$/,
+      test: /\.(css|less)$/,
+      use: [
+        'style-loader', {
+          loader: 'css-loader',
+          options: {
+            modules: true,
+            importLoaders: 1,
+            localIdentName: '[path]___[name]__[local]___[hash:base64:5]',
+          },
+        },
+        'postcss-loader',
+        'less-loader',
+      ],
+      include: [
+        resolve(__dirname, '../src'),
+        // resolve(__dirname, '../node_modules/antd'),
       ],
     }, ],
   },

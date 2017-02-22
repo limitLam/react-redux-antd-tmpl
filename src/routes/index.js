@@ -4,12 +4,12 @@
 */
 import React from 'react';
 import {
-	Route,
-	IndexRoute
+    Route,
+    IndexRoute
 } from 'react-router';
 
 //  layout
-import Layout from 'PAGES/layouts';
+import Layout from 'PAGES/layout';
 
 import Index from 'PAGES/index';
 
@@ -22,7 +22,7 @@ import Error404 from 'PAGES/404';
 
 //  输出路由
 export default (
-	<Route path="/" component={Layout}>
+    <Route path="/" component={Layout}>
         <IndexRoute component={Index}/>
         <Route path="index" indexRoute={ { onEnter: (nextState, replace) => replace('/') } } />
         <Route path="test" component={test} />

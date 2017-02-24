@@ -32,6 +32,7 @@ export default class Index extends React.Component {
         this.todoDelete = this.todoDelete.bind(this);
         this.deleteComfirm = this.deleteComfirm.bind(this);
         this.deleteFinish = this.deleteFinish.bind(this);
+        this.allCheckedOnChange = this.allCheckedOnChange.bind(this);
 
         this.state = {
             list: [{
@@ -40,6 +41,7 @@ export default class Index extends React.Component {
                 checked: false,
             }, ],
         }
+
     }
 
     //  checkBox改变时改变对应item的checked
@@ -80,10 +82,22 @@ export default class Index extends React.Component {
     todoOnEnter(e) {
         let value = e.target.value;
         if (!value) {
+            //  空值退出报错提示
             Message.error(`TodoContent must not be null.`);
             return false;
         }
         let list = this.state.list;
+
+        let existing = !!list.find((item) => {
+            return item.content == value;
+        });
+
+        if (existing) {
+            //  已有相同TODO退出报错提示
+            Message.error(`This todo has existed.`);
+            return false;
+        }
+
         let item = {
             id: new Date().getTime(),
             content: value,
@@ -95,6 +109,9 @@ export default class Index extends React.Component {
         this.setState({
             list
         });
+
+        //  重置value为空值
+        e.target.value = '';
 
     }
 
@@ -115,12 +132,14 @@ export default class Index extends React.Component {
         let list = this.state.list;
         let index = this._getItemIndex(id);
 
-        const todoContent = list[index].content;
+        const item = list[index];
+
+        const content = item.checked ? `Delete '${item.content}' ?` : `'${item.content}' is not finished, do you want to delete it?`;
 
         let me = this;
         Modal.confirm({
             title: 'Confirm',
-            content: `Delete ${todoContent} ?`,
+            content: content,
             okText: 'OK',
             cancelText: 'Cancel',
             onOk() {
@@ -134,11 +153,15 @@ export default class Index extends React.Component {
         this.state.list.map((item, index) => {
             item.checked && num++;
         });
-        return num
+        return num;
     }
 
     deleteFinish() {
         let me = this;
+        if (me.getCheckedNum() < 1) {
+            Message.error(`No finished to be deleted.`)
+            return false;
+        }
         Modal.confirm({
             title: 'Confirm',
             content: `Delete finished ?`,
@@ -158,6 +181,18 @@ export default class Index extends React.Component {
 
     }
 
+    //  全选
+    allCheckedOnChange(e) {
+        let allChecked = e.target.checked;
+        let list = this.state.list;
+        list.map((item, index) => {
+            item.checked = allChecked;
+        });
+        this.setState({
+            list
+        });
+    }
+
 
     render() {
 
@@ -166,6 +201,8 @@ export default class Index extends React.Component {
                 'line-through': checked,
             });
         }
+
+        const checkedNum = this.getCheckedNum();
 
         return (
             <div styleName="todoBox">
@@ -206,19 +243,21 @@ export default class Index extends React.Component {
                         }
                     </div>
                     <div styleName="footer">
-                        <Row>
-                            <Col span={16}>
-                                {
-                                    this.state.list.length > 0 ?
-                                    `${this.getCheckedNum()} finished : ${this.state.list.length} total`
-                                    :
-                                    null
-                                }
-                            </Col>
-                            <Col span={8} styleName="textAlignCenter">
-                                <Button onClick={ this.deleteFinish }>delete finished</Button>
-                            </Col>
-                        </Row>
+                        {
+                            this.state.list.length > 0 ?
+                            <Row>
+                                <Col span={16}>
+                                    <Checkbox checked={ checkedNum == this.state.list.length } onClick={ this.allCheckedOnChange }>
+                                        {`${checkedNum} finished : ${this.state.list.length} total`}
+                                    </Checkbox>
+                                </Col>
+                                <Col span={8} styleName="textAlignCenter">
+                                    <Button onClick={ this.deleteFinish }>delete finished</Button>
+                                </Col>
+                            </Row>
+                            :
+                            null
+                        }
                     </div>
                 </div>
             </div>

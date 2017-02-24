@@ -15,9 +15,12 @@ import {
     Modal,
 } from 'antd';
 
-import classnames from 'classnames';
+import store from 'store';
 
 import './style.less';
+
+import TodoItem from './components/todoItem';
+
 
 export default class Index extends React.Component {
     static propTypes = {
@@ -34,14 +37,24 @@ export default class Index extends React.Component {
         this.deleteFinish = this.deleteFinish.bind(this);
         this.allCheckedOnChange = this.allCheckedOnChange.bind(this);
 
+        const initList = [{
+            id: new Date().getTime(),
+            content: 'TODO1',
+            checked: false,
+        }, ];
+
+        let list = store.get('limit_todoList') ? store.get('limit_todoList') : initList;
+
         this.state = {
-            list: [{
-                id: new Date().getTime(),
-                content: 'TODO1',
-                checked: false,
-            }, ],
+            list
         }
 
+    }
+
+    //  本地存储list
+    storeList(list) {
+        store.set('limit_todoList', list);
+        return this;
     }
 
     //  checkBox改变时改变对应item的checked
@@ -57,7 +70,7 @@ export default class Index extends React.Component {
                 checked: checked,
             });
 
-            this.setState({
+            this.storeList(list).setState({
                 list
             });
         }
@@ -106,7 +119,7 @@ export default class Index extends React.Component {
 
         list.push(item);
 
-        this.setState({
+        this.storeList(list).setState({
             list
         });
 
@@ -122,7 +135,7 @@ export default class Index extends React.Component {
 
         list.splice(index, 1);
 
-        this.setState({
+        this.storeList(list).setState({
             list
         });
     }
@@ -173,7 +186,7 @@ export default class Index extends React.Component {
                     return !item.checked;
                 });
 
-                me.setState({
+                me.storeList(list).setState({
                     list
                 });
             }
@@ -188,21 +201,16 @@ export default class Index extends React.Component {
         list.map((item, index) => {
             item.checked = allChecked;
         });
-        this.setState({
+        this.storeList(list).setState({
             list
         });
     }
 
 
     render() {
+        let me = this;
 
-        let contentClassName = (checked) => {
-            return classnames({
-                'line-through': checked,
-            });
-        }
-
-        const checkedNum = this.getCheckedNum();
+        const checkedNum = me.getCheckedNum();
 
         return (
             <div styleName="todoBox">
@@ -211,48 +219,44 @@ export default class Index extends React.Component {
                 </div>
                 <div styleName="body">
                     <div styleName="header" className="todoHeader">
-                        <Input prefix={<Icon type="user" />} size="large" placeholder="TODOS" onPressEnter={ this.todoOnEnter }/>
+                        <Input prefix={<Icon type="user" />} size="large" placeholder="TODOS" onPressEnter={ me.todoOnEnter }/>
                     </div>
                     <div styleName="content">
                         {
-                            this.state.list.length > 0 ?
+                            me.state.list.length > 0 ?
                             <ul styleName="todoList">
                                 {
-                                    this.state.list.map( (item,index) => {
+                                    me.state.list.map( (item,index) => {
+                                        const itemProp = {
+                                            ...item,
+                                            itemOnChange : me.itemOnChange,
+                                            deleteComfirm : me.deleteComfirm,
+                                            key: index,
+                                        }
+
                                         return (
-                                            <li styleName="todoItem" key={index}>
-                                                <Row gutter={16}>
-                                                    <Col span={19} styleName="checkBoxCol">
-                                                        <Checkbox checked={ item.checked } onChange={ (e) => this.itemOnChange(e,item.id) }>
-                                                            <span className={ contentClassName(item.checked) }>{ item.content }</span>
-                                                        </Checkbox>
-                                                    </Col>
-                                                    <Col span={5} styleName="textAlignCenter">
-                                                        <Button type="danger" onClick={ () => this.deleteComfirm(item.id) }>delete</Button>
-                                                    </Col>
-                                                </Row>
-                                            </li>
+                                            <TodoItem {...itemProp} />
                                         )
                                     })
                                 }
                             </ul>
                             :
                             <div styleName="emptyData">
-                                no Data
+                                nothing todo
                             </div>
                         }
                     </div>
                     <div styleName="footer">
                         {
-                            this.state.list.length > 0 ?
+                            me.state.list.length > 0 ?
                             <Row>
                                 <Col span={16}>
-                                    <Checkbox checked={ checkedNum == this.state.list.length } onClick={ this.allCheckedOnChange }>
-                                        {`${checkedNum} finished : ${this.state.list.length} total`}
+                                    <Checkbox checked={ checkedNum == me.state.list.length } onClick={ me.allCheckedOnChange }>
+                                        {`${checkedNum} finished : ${me.state.list.length} total`}
                                     </Checkbox>
                                 </Col>
                                 <Col span={8} styleName="textAlignCenter">
-                                    <Button onClick={ this.deleteFinish }>delete finished</Button>
+                                    <Button onClick={ me.deleteFinish }>delete finished</Button>
                                 </Col>
                             </Row>
                             :

@@ -38,7 +38,7 @@ export class LayoutComponent extends Component {
           collapsed={this.props.collapsed}
           onCollapse={this.props.onCollapse}
         >
-          <div className="logo" />
+    <div className="text-align-center" />
           <Menu theme="dark" mode={this.props.mode} openKeys={['sub1']} defaultSelectedKeys={['2']}>
             <SubMenu
               key="sub1"

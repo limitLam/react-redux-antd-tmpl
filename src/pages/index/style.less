@@ -1,0 +1,70 @@
+:global{
+	.line-through{
+		text-decoration: line-through;
+	}
+
+	.todoHeader{
+		.ant-input-group-addon,input{
+			border-radius: 0;
+		}
+	}
+}
+
+.textAlignCenter{
+	text-align: center;
+}
+
+.todoBoxBorder{
+	border:1px solid #ddd;
+	border-top: none;
+}	
+
+.todoBox{
+	margin:0 auto;
+	width: 500px;
+	box-sizing: border-box;
+}
+
+.title{
+	composes: textAlignCenter;
+}
+
+.body{
+	
+}
+
+.header{
+	
+}
+
+.content{
+	composes: todoBoxBorder;
+	padding: 0 10px;
+	box-sizing: border-box;
+}
+
+.todoList{
+	
+}
+
+.todoItem{
+	font-size: 16px;
+	line-height: 2em;
+	padding: 5px 0;
+}
+
+.checkBoxCol{
+
+}
+
+.emptyData{
+	composes: textAlignCenter;
+	padding: 20px 0;
+}
+
+.footer{
+	composes: todoBoxBorder;
+	padding:8px 10px;
+	box-sizing: border-box;
+	line-height: 28px;
+}

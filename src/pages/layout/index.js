@@ -39,7 +39,7 @@ export class LayoutComponent extends Component {
           onCollapse={this.props.onCollapse}
         >
     <div className="text-align-center" />
-          <Menu theme="dark" mode={this.props.mode} openKeys={['sub1']} defaultSelectedKeys={['2']}>
+          <Menu theme="dark" mode={this.props.mode} defaultSelectedKeys={['2']}>
             <SubMenu
               key="sub1"
               title={<span><Icon type="user" /><span className="nav-text">User</span></span>}
